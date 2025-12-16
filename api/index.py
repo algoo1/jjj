@@ -12,6 +12,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Try-except block to handle different import contexts (local vs vercel)
+try:
+    from .storage import StorageManager
+except ImportError:
+    from storage import StorageManager
+
+storage_manager = StorageManager()
+
+
 app = FastAPI()
 
 app.add_middleware(
@@ -159,6 +168,33 @@ async def upscale_video(file: UploadFile = File(...)):
     else:
         print(f"Output data handling fallback: {output_data}")
         return JSONResponse({"output": output_data, "type": "raw"})
+
+@app.get("/api/upload-url")
+def get_upload_url(filename: str, content_type: str = "video/mp4"):
+    """
+    Get a presigned URL to upload a file directly to the Cloud Hub.
+    """
+    # Create a unique key (folder/filename)
+    object_name = f"uploads/{filename}"
+    
+    url = storage_manager.generate_presigned_upload_url(object_name)
+    
+    if not url:
+        raise HTTPException(status_code=500, detail="Could not generate upload URL")
+        
+    return {"url": url, "key": object_name}
+
+@app.get("/api/download-url")
+def get_download_url(file_key: str):
+    """
+    Get a presigned URL to download a processed file.
+    """
+    url = storage_manager.generate_presigned_download_url(file_key)
+    if not url:
+        raise HTTPException(status_code=404, detail="File not found or error generating URL")
+        
+    return {"url": url}
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
