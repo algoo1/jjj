@@ -196,5 +196,19 @@ def get_download_url(file_key: str):
     return {"url": url}
 
 
+@app.get("/api/debug-env")
+def debug_env():
+    """Debug endpoint to check if environment variables are loaded correctly"""
+    key = os.getenv("RUNPOD_API_KEY", "")
+    r2_url = os.getenv("R2_ENDPOINT_URL", "")
+    
+    return {
+        "runpod_key_loaded": bool(key),
+        "runpod_key_prefix": key[:10] + "..." if key else "None",
+        "runpod_key_length": len(key),
+        "r2_url_loaded": bool(r2_url),
+        "r2_url_value": r2_url
+    }
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("api.index:app", host="0.0.0.0", port=8000, reload=True)
