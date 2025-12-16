@@ -24,6 +24,28 @@
         </header>
 
         <main>
+            <!-- Quality Slider (Moved Above) -->
+            <div class="quality-container"
+                style="margin-bottom: 20px; padding: 15px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #cbd5e1; font-weight: 600;">جودة الفيديو (Video Quality)</span>
+                    <div id="quality-display"
+                        style="background: rgba(220, 38, 38, 0.2); border: 1px solid #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">
+                        1080p</div>
+                </div>
+
+                <div style="position: relative; padding: 0 5px;">
+                    <input type="range" id="quality-slider" min="0" max="2" step="1" value="1"
+                        style="width: 100%; cursor: pointer;">
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; margin-top: 8px;">
+                        <span>720p</span>
+                        <span>1080p</span>
+                        <span>4K</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="upload-area" id="drop-zone">
                 <div class="upload-content" id="upload-content">
                     <div class="icon-wrapper">
@@ -32,9 +54,16 @@
                     <h3>اسحب وأفلت الفيديو هنا</h3>
                     <p>أو</p>
                     <input type="file" id="file-input" accept="video/*" hidden>
-                    <button class="btn-primary" onclick="document.getElementById('file-input').click()">تصفح
+                    <button class="btn-secondary" onclick="document.getElementById('file-input').click()">تصفح
                         الملفات</button>
-                    <p class="file-info" id="file-name"></p>
+
+                    <div id="selected-file-info" class="hidden"
+                        style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <p id="file-name" style="color: #fff; margin-bottom: 10px; word-break: break-all;"></p>
+                        <button id="send-btn" class="btn-primary" style="width: 100%;">
+                            <i class="fa-solid fa-paper-plane"></i> إرسال (Send)
+                        </button>
+                    </div>
                 </div>
 
                 <div class="loading-state hidden" id="loading-state">
@@ -66,19 +95,25 @@
                     <p id="error-text">يرجى المحاولة مرة أخرى.</p>
                     <button class="btn-secondary" id="retry-btn">حاول مجدداً</button>
                 </div>
+            </div>
 
-                <!-- Debug Logs Section -->
-                <div class="logs-container" id="logs-container"
-                    style="margin-top: 20px; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #cbd5e1; max-height: 150px; overflow-y: auto; display: none;">
-                    <div style="border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; font-weight: bold;">
-                        سجل النظام (System Logs):</div>
-                    <div id="logs-content"></div>
+            <!-- Logs Section (Inline accordion style) -->
+            <div style="margin-top: 20px;">
+                <button id="logs-toggle-inline"
+                    style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                    <span><i class="fa-solid fa-terminal"></i> سجل النظام (Logs)</span>
+                    <i class="fa-solid fa-chevron-down" id="logs-chevron"></i>
+                </button>
+                <div id="logs-content-inline"
+                    style="display: none; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 0 0 8px 8px; font-family: monospace; font-size: 0.8rem; color: #0f0; max-height: 200px; overflow-y: auto; margin-top: -5px; border: 1px solid rgba(255,255,255,0.05); border-top: none;">
+                    <!-- Logs go here -->
                 </div>
             </div>
         </main>
 
         <footer>
             <p>مدعوم بواسطة RunPod & FlashVSR</p>
+            <p style="font-size: 0.7rem; margin-top: 5px; opacity: 0.5;">Version 1.3.0</p>
         </footer>
 
     </div>
