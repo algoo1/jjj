@@ -8,6 +8,7 @@ class StorageManager:
         self.access_key_id = os.getenv("R2_ACCESS_KEY_ID")
         self.secret_access_key = os.getenv("R2_SECRET_ACCESS_KEY")
         self.bucket_name = os.getenv("R2_BUCKET_NAME")
+        self.public_url = os.getenv("R2_PUBLIC_URL")
         
         if not all([self.endpoint_url, self.access_key_id, self.secret_access_key, self.bucket_name]):
             print("Warning: Cloudflare R2 credentials missing. Storage features will not work.")
@@ -41,6 +42,13 @@ class StorageManager:
             return None
 
     def generate_presigned_download_url(self, object_name, expiration=3600):
+        # If a public URL is configured, returning that is cleaner and faster
+        if self.public_url:
+            # Remove trailing slash from public_url if present and ensure object_name doesn't have leading slash
+            base = self.public_url.rstrip("/")
+            path = object_name.lstrip("/")
+            return f"{base}/{path}"
+
         if not self.s3_client:
             return None
         try:
